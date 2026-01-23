@@ -1,0 +1,132 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // --- HELPERS ---
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isSuperAdmin() {
+      return isSignedIn() && request.auth.token.email == 'info@visualmotion.co.za';
+    }
+
+    // Safely fetches the current authenticated user's profile data
+    function getAuthUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isParent() {
+      return isSignedIn() && getAuthUserData().role == 'Parent';
+    }
+
+    function isStaff() {
+      let role = getAuthUserData().role;
+      return role == 'Teacher' || role == 'Principal';
+    }
+
+    function mySchoolId() {
+      return getAuthUserData().schoolId;
+    }
+
+    // --- RULES ---
+
+    // 1. SCHOOLS
+    match /schools/{schoolId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+      
+      match /config/{configId} {
+        allow read: if isSignedIn() && (mySchoolId() == schoolId || isSuperAdmin());
+        allow write: if isSignedIn() && (isStaff() && mySchoolId() == schoolId || isSuperAdmin());
+      }
+    }
+
+    // 2. USERS
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if isSignedIn() && (
+        request.auth.uid == userId || 
+        isSuperAdmin() || 
+        (isParent() && 
+         request.resource.data.role == 'Student' && 
+         request.resource.data.parentId == request.auth.uid &&
+         request.resource.data.schoolId == mySchoolId())
+      );
+      allow update: if isSignedIn() && (
+        request.auth.uid == userId || 
+        isSuperAdmin() || 
+        (resource.data.role == 'Student' && resource.data.parentId == request.auth.uid)
+      );
+      allow delete: if isSuperAdmin();
+    }
+
+    // 3. ANNOUNCEMENTS (Staff Bulletin)
+    match /announcements/{id} {
+      // Split read/write for clarity. resource == null check for existence tests.
+      allow read: if isSignedIn() && (isStaff() && (resource == null || resource.data.schoolId == mySchoolId()) || isSuperAdmin());
+      allow write: if isSignedIn() && (isStaff() && (request.resource.data.schoolId == mySchoolId() || resource.data.schoolId == mySchoolId()) || isSuperAdmin());
+    }
+
+    // 4. ACADEMICS (Assignments & Resources)
+    match /assignments/{id} {
+      allow read: if isSignedIn() && (resource.data.schoolId == mySchoolId() || isSuperAdmin());
+      allow create, update, delete: if isSignedIn() && (isStaff() && (request.resource.data.schoolId == mySchoolId() || resource.data.schoolId == mySchoolId()) || isSuperAdmin());
+    }
+
+    match /resources/{id} {
+      allow read: if isSignedIn() && (resource.data.schoolId == mySchoolId() || isSuperAdmin());
+      allow create, update, delete: if isSignedIn() && (isStaff() && (request.resource.data.schoolId == mySchoolId() || resource.data.schoolId == mySchoolId()) || isSuperAdmin());
+    }
+
+    // 5. COMMUNITY FEED (Chat)
+    match /messages/{id} {
+      allow read: if isSignedIn() && (resource.data.schoolId == mySchoolId() || isSuperAdmin());
+      allow create: if isSignedIn() && (getAuthUserData().role != 'Student' && request.resource.data.schoolId == mySchoolId() || isSuperAdmin());
+      allow delete: if isSignedIn() && (isStaff() || resource.data.senderId == request.auth.uid || isSuperAdmin());
+    }
+
+    // INBOX: Conversations & Direct Messages
+    match /conversations/{id} {
+      allow get: if isSignedIn();
+      allow list, update, delete: if isSignedIn() && (request.auth.uid in resource.data.participants || isSuperAdmin());
+      allow create: if isSignedIn() && (request.auth.uid in request.resource.data.participants || isSuperAdmin());
+    }
+
+    match /direct_messages/{id} {
+      allow get: if isSignedIn() && (resource == null || request.auth.uid in resource.data.participants || isSuperAdmin());
+      allow list: if isSignedIn() && (request.auth.uid in resource.data.participants || isSuperAdmin());
+      allow create: if isSignedIn() && (request.auth.uid in request.resource.data.participants || isSuperAdmin());
+      allow delete: if isSuperAdmin();
+    }
+
+    // 6. ALERTS (Absence & Health)
+    match /alerts/{id} {
+      allow read: if isSignedIn() && (resource.data.schoolId == mySchoolId() || isSuperAdmin());
+      allow create: if isSignedIn() && (isStaff() || isSuperAdmin());
+      allow update: if isSignedIn() && (resource.data.schoolId == mySchoolId() || isSuperAdmin());
+      allow delete: if isSignedIn() && (isStaff() || isSuperAdmin());
+    }
+
+    // 7. MEMORIES (Yearbook & Journal)
+    match /yearbook/{id} {
+      allow read: if isSignedIn() && (resource.data.schoolId == mySchoolId() || isSuperAdmin());
+      allow create: if isSignedIn() && (isStaff() || isSuperAdmin());
+      allow update: if isSignedIn() && (resource.data.schoolId == mySchoolId() || isSuperAdmin());
+      allow delete: if isSignedIn() && (isStaff() || isSuperAdmin());
+    }
+
+    // 8. CALENDAR
+    match /events/{id} {
+      allow read: if isSignedIn() && (resource.data.schoolId == mySchoolId() || isSuperAdmin());
+      allow create, update, delete: if isSignedIn() && (isStaff() || isSuperAdmin());
+    }
+
+    // GLOBAL FALLBACK
+    match /{document=**} {
+      allow read, write: if isSuperAdmin();
+    }
+  }
+}

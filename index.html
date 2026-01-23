@@ -1,0 +1,479 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="educater. Official">
+    <title>educater. | The Digital Campus Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                navy: '#072432',
+                teal: '#00ff8e',
+                slate: '#f8fafc'
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #ffffff;
+        color: #072432;
+        overscroll-behavior-y: none;
+      }
+      h1, h2, h3, h4 {
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+      }
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+      .tab-content { display: none; }
+      .tab-content.active { display: block; }
+      
+      .nav-link.active { color: #00ff8e; }
+      
+      #mobile-menu { display: none; }
+      #mobile-menu.active { display: flex; }
+
+      #download-modal { display: none; }
+      #download-modal.active { display: flex; }
+      
+      #download-modal {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="selection:bg-brand-teal selection:text-brand-navy">
+    <!-- Navigation Header -->
+    <nav class="fixed top-0 left-0 w-full z-[100] bg-white/80 backdrop-blur-xl border-b border-slate-100">
+      <div class="max-w-7xl mx-auto px-6 h-20 md:h-24 flex items-center justify-between">
+        <button class="tab-trigger hover:opacity-80 transition-opacity" data-tab="home">
+          <img src="https://firebasestorage.googleapis.com/v0/b/websitey-9f8e4.firebasestorage.app/o/Educator.svg?alt=media&token=423e9fc5-b827-4ff6-8778-51a7343890e2" alt="educater." class="h-[18px] md:h-[26px] w-auto">
+        </button>
+        
+        <div class="hidden lg:flex items-center gap-6">
+          <button class="tab-trigger nav-link active text-[10px] font-medium uppercase tracking-widest transition-all" data-tab="home">Home</button>
+          <button class="tab-trigger nav-link text-[10px] font-medium uppercase tracking-widest text-slate-400 hover:text-brand-navy transition-all" data-tab="about">About</button>
+          <button class="tab-trigger nav-link text-[10px] font-medium uppercase tracking-widest text-slate-400 hover:text-brand-navy transition-all" data-tab="how-it-works">How it Works</button>
+          <button class="tab-trigger nav-link text-[10px] font-medium uppercase tracking-widest text-slate-400 hover:text-brand-navy transition-all" data-tab="pricing">Pricing</button>
+          <button class="tab-trigger nav-link text-[10px] font-medium uppercase tracking-widest text-slate-400 hover:text-brand-navy transition-all" data-tab="privacy">Privacy</button>
+          <button class="tab-trigger nav-link text-[10px] font-medium uppercase tracking-widest text-slate-400 hover:text-brand-navy transition-all" data-tab="refund">Refund Policy</button>
+          <button class="tab-trigger nav-link text-[10px] font-medium uppercase tracking-widest text-slate-400 hover:text-brand-navy transition-all" data-tab="contact">Contact</button>
+          
+          <button class="modal-open px-6 py-3 bg-brand-navy text-white rounded-full font-black uppercase tracking-widest text-[9px] shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-brand-teal"></i> Download App
+          </button>
+        </div>
+
+        <button id="menu-toggle" class="lg:hidden p-3 bg-slate-50 rounded-xl text-brand-navy shadow-sm">
+          <i data-lucide="menu" id="menu-icon" class="w-6 h-6 text-brand-teal"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="lg:hidden fixed inset-x-0 top-20 bg-white border-b border-slate-100 p-8 flex-col gap-6 shadow-2xl">
+        <button class="tab-trigger text-lg font-medium uppercase tracking-widest text-left" data-tab="home">Home</button>
+        <button class="tab-trigger text-lg font-medium uppercase tracking-widest text-left text-slate-400" data-tab="about">About</button>
+        <button class="tab-trigger text-lg font-medium uppercase tracking-widest text-left text-slate-400" data-tab="how-it-works">How it Works</button>
+        <button class="tab-trigger text-lg font-medium uppercase tracking-widest text-left text-slate-400" data-tab="pricing">Pricing</button>
+        <button class="tab-trigger text-lg font-medium uppercase tracking-widest text-left text-slate-400" data-tab="privacy">Privacy</button>
+        <button class="tab-trigger text-lg font-medium uppercase tracking-widest text-left text-slate-400" data-tab="refund">Refund Policy</button>
+        <button class="tab-trigger text-lg font-medium uppercase tracking-widest text-left text-slate-400" data-tab="contact">Contact</button>
+        <button class="modal-open w-full py-5 bg-brand-navy text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3">
+          <i data-lucide="download" class="w-5 h-5 text-brand-teal"></i> Download App
+        </button>
+      </div>
+    </nav>
+
+    <main class="pt-20 md:pt-24">
+      <!-- HOME SECTION -->
+      <section id="tab-home" class="tab-content active animate-fade-in">
+        <div class="relative min-h-[90vh] flex flex-col items-center justify-start px-6 overflow-hidden bg-white pt-10 md:pt-16 pb-16 md:pb-24 text-center">
+          <div class="max-w-5xl mx-auto relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 backdrop-blur-md rounded-full border border-slate-100 mb-6">
+              <span class="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500">The Institution Reimagined</span>
+            </div>
+            
+            <h1 class="text-4xl md:text-7xl font-semibold text-slate-900 leading-[1.1] tracking-tight uppercase mb-6 md:mb-8">
+              The Digital School <span class="text-brand-teal">Experience.</span>
+            </h1>
+            
+            <p class="text-base md:text-lg text-slate-500 font-medium leading-relaxed max-w-3xl mx-auto mb-8 md:mb-10">
+              A secure, verified ecosystem featuring <strong>automated yearbooks</strong>, premium tutoring resources, and direct parent-teacher messaging.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12 md:mb-16">
+              <button class="modal-open px-10 py-5 bg-brand-navy text-white rounded-[2rem] font-medium uppercase tracking-widest text-[11px] shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
+                Get Started <i data-lucide="arrow-right" class="w-4 h-4 text-brand-teal"></i>
+              </button>
+              <button class="tab-trigger px-10 py-5 bg-slate-50 text-slate-600 border border-slate-200 rounded-[2rem] font-medium uppercase tracking-widest text-[11px] hover:bg-slate-100 transition-all flex items-center justify-center gap-3" data-tab="pricing">
+                View Pricing
+              </button>
+            </div>
+          </div>
+
+          <!-- Feature Composition: Preserves Desktop look while centering mobile stack -->
+          <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 items-center relative z-10 w-full px-4">
+            
+            <!-- Mobile Column: Centered Stack -->
+            <!-- Left Features (Desktop: Left Column, Mobile: Integrated in stack) -->
+            <div class="flex flex-col gap-10 md:gap-16 items-center md:items-end text-center md:text-right order-2 md:order-1">
+              <div class="space-y-3 group">
+                <div class="w-14 h-14 md:w-16 md:h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-brand-teal mx-auto md:ml-auto md:mr-0 shadow-sm group-hover:scale-110 transition-transform"><i data-lucide="camera" class="w-7 h-7"></i></div>
+                <h4 class="text-lg md:text-xl font-bold uppercase tracking-tight">Auto Yearbook</h4>
+                <p class="text-[11px] md:text-xs text-slate-400 font-medium leading-relaxed max-w-[240px] md:max-w-[200px] mx-auto md:ml-auto md:mr-0">Daily moments harvested automatically into a stunning annual archive.</p>
+              </div>
+              <div class="space-y-3 group">
+                <div class="w-14 h-14 md:w-16 md:h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-brand-teal mx-auto md:ml-auto md:mr-0 shadow-sm group-hover:scale-110 transition-transform"><i data-lucide="book-open" class="w-7 h-7"></i></div>
+                <h4 class="text-lg md:text-xl font-bold uppercase tracking-tight">Tutoring Hub</h4>
+                <p class="text-[11px] md:text-xs text-slate-400 font-medium leading-relaxed max-w-[240px] md:max-w-[200px] mx-auto md:ml-auto md:mr-0">Premium subject resources and video guides for every grade.</p>
+              </div>
+            </div>
+
+            <!-- Phone Mockup: Stays center on desktop, positioned appropriately on mobile -->
+            <div class="relative flex justify-center py-4 md:py-0 scale-75 md:scale-100 order-first md:order-2">
+              <div class="relative">
+                <div class="absolute inset-0 bg-brand-teal/5 blur-[80px] rounded-full scale-150 -z-10"></div>
+                <img src="https://firebasestorage.googleapis.com/v0/b/websitey-9f8e4.firebasestorage.app/o/educater%20screen.png?alt=media&token=e794e768-6c78-4867-bb8f-ae3c82eea16f" class="w-full max-w-[200px] md:max-w-[300px] h-auto drop-shadow-[0_35px_35px_rgba(0,0,0,0.15)] mix-blend-multiply" alt="App Preview">
+              </div>
+            </div>
+
+            <!-- Right Features (Desktop: Right Column, Mobile: Integrated in stack) -->
+            <div class="flex flex-col gap-10 md:gap-16 items-center md:items-start text-center md:text-left order-3 md:order-3">
+              <div class="space-y-3 group">
+                <div class="w-14 h-14 md:w-16 md:h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-brand-teal mx-auto md:ml-0 md:mr-auto shadow-sm group-hover:scale-110 transition-transform"><i data-lucide="message-circle" class="w-7 h-7"></i></div>
+                <h4 class="text-lg md:text-xl font-bold uppercase tracking-tight">Grade Chats</h4>
+                <p class="text-[11px] md:text-xs text-slate-400 font-medium leading-relaxed max-w-[240px] md:max-w-[200px] mx-auto md:ml-0 md:mr-auto">Strictly grade-specific community collaboration and chats.</p>
+              </div>
+              <div class="space-y-3 group">
+                <div class="w-14 h-14 md:w-16 md:h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-brand-teal mx-auto md:ml-0 md:mr-auto shadow-sm group-hover:scale-110 transition-transform"><i data-lucide="mail" class="w-7 h-7"></i></div>
+                <h4 class="text-lg md:text-xl font-bold uppercase tracking-tight">Direct Messaging</h4>
+                <p class="text-[11px] md:text-xs text-slate-400 font-medium leading-relaxed max-w-[240px] md:max-w-[200px] mx-auto md:ml-0 md:mr-auto">Safe, official Parent-Teacher channels for focused communication.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRICING SECTION -->
+      <section id="tab-pricing" class="tab-content animate-fade-in bg-white py-16 md:py-32 px-6">
+        <div class="max-w-6xl mx-auto text-center space-y-8 md:space-y-12">
+          <div class="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-full border border-slate-100 mb-2">
+            <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Fair Institutional Pricing</span>
+          </div>
+          
+          <h2 class="text-3xl md:text-5xl font-semibold text-slate-900 leading-[1.0] tracking-tight uppercase">
+            Simple. Affordable. <span class="text-brand-teal">Direct.</span>
+          </h2>
+          
+          <div class="flex flex-col items-center justify-center py-4 md:py-10">
+            <div class="text-7xl md:text-9xl font-medium text-brand-navy leading-none tracking-tighter">
+              50 <span class="text-xl md:text-4xl text-brand-teal font-bold tracking-widest uppercase align-middle">RAND</span>
+            </div>
+            <p class="text-sm md:text-xl font-bold uppercase tracking-[0.3em] text-slate-400 mt-4">Per Month / Per Child</p>
+          </div>
+
+          <div class="max-w-3xl mx-auto bg-slate-50 p-8 md:p-12 rounded-[2.5rem] md:rounded-[4rem] border border-slate-200 text-left space-y-6 md:space-y-8 shadow-sm">
+            <div class="flex items-center gap-4 mb-2">
+               <div class="w-10 h-10 bg-brand-navy rounded-xl flex items-center justify-center text-brand-teal"><i data-lucide="zap" class="w-5 h-5"></i></div>
+               <h3 class="text-lg md:text-xl font-bold uppercase tracking-tight text-slate-900">App Store Efficiency</h3>
+            </div>
+            <p class="text-sm md:text-base text-slate-500 font-medium leading-relaxed">
+              We specifically designed Educater to be installed as a PWA, bypassing the 30% App Store fees. This makes the platform significantly more affordable for you while maintaining premium performance.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 md:pt-6 border-t border-slate-200">
+              <div class="flex items-center gap-3 font-bold text-slate-900 uppercase text-[9px] md:text-[10px] tracking-widest"><i data-lucide="check" class="text-brand-teal w-4 h-4"></i> No hidden fees</div>
+              <div class="flex items-center gap-3 font-bold text-slate-900 uppercase text-[9px] md:text-[10px] tracking-widest"><i data-lucide="check" class="text-brand-teal w-4 h-4"></i> Grade-locked chats</div>
+              <div class="flex items-center gap-3 font-bold text-slate-900 uppercase text-[9px] md:text-[10px] tracking-widest"><i data-lucide="check" class="text-brand-teal w-4 h-4"></i> Auto Yearbooks</div>
+              <div class="flex items-center gap-3 font-bold text-slate-900 uppercase text-[9px] md:text-[10px] tracking-widest"><i data-lucide="check" class="text-brand-teal w-4 h-4"></i> Tutoring resources</div>
+            </div>
+          </div>
+
+          <button class="modal-open mt-6 md:mt-12 px-10 py-5 md:px-12 md:py-6 bg-brand-navy text-white rounded-[2rem] md:rounded-[2.5rem] font-bold uppercase tracking-[0.2em] text-[10px] md:text-[11px] shadow-2xl hover:scale-105 active:scale-95 transition-all">
+            Get Started Now
+          </button>
+        </div>
+      </section>
+
+      <!-- PRIVACY SECTION -->
+      <section id="tab-privacy" class="tab-content animate-fade-in bg-white py-16 md:py-32 px-6">
+        <div class="max-w-6xl mx-auto space-y-12 md:space-y-20">
+          <div class="text-center space-y-6 md:space-y-8">
+            <h2 class="text-4xl md:text-7xl font-semibold text-brand-navy uppercase leading-none tracking-tighter">Privacy <span class="text-brand-teal">Sovereignty.</span></h2>
+            <p class="text-base md:text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">Educater is powered by <strong>Google Firebase</strong>, featuring military-grade encryption for total safety.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 text-left">
+            <div class="bg-slate-50 p-8 md:p-12 rounded-[2.5rem] md:rounded-[4rem] border border-slate-100 shadow-sm">
+              <div class="w-14 h-14 bg-brand-navy rounded-2xl flex items-center justify-center text-brand-teal mb-6 md:mb-8"><i data-lucide="shield-check" class="w-7 h-7"></i></div>
+              <h3 class="text-xl md:text-2xl font-bold uppercase mb-4 tracking-tight">School Isolation</h3>
+              <p class="text-slate-500 text-sm font-medium leading-relaxed">Multi-tenant architecture ensures that school data is strictly separated and private from other institutions.</p>
+            </div>
+            <div class="bg-slate-50 p-8 md:p-12 rounded-[2.5rem] md:rounded-[4rem] border border-slate-100 shadow-sm">
+              <div class="w-14 h-14 bg-brand-navy rounded-2xl flex items-center justify-center text-brand-teal mb-6 md:mb-8"><i data-lucide="users" class="w-7 h-7"></i></div>
+              <h3 class="text-xl md:text-2xl font-bold uppercase mb-4 tracking-tight">Grade Segregation</h3>
+              <p class="text-slate-500 text-sm font-medium leading-relaxed">Privacy extends deep: Grade 1 accounts are locked away from Grade 2 visibility for a safe grade-specific experience.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section id="tab-how-it-works" class="tab-content animate-fade-in max-w-7xl mx-auto py-16 md:py-32 px-6">
+        <div class="text-center mb-12 md:mb-32 space-y-4">
+          <h2 class="text-4xl md:text-7xl font-semibold text-brand-navy uppercase tracking-tight">The Digital <br><span class="text-brand-teal">Campus.</span></h2>
+          <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">Our Multi-User Architecture</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 text-left">
+          <div class="bg-brand-navy p-8 md:p-10 rounded-[2.5rem] md:rounded-[3.5rem] text-white space-y-6 md:space-y-8">
+            <h3 class="text-2xl md:text-3xl font-bold uppercase tracking-tight text-brand-teal">For Parents</h3>
+            <ul class="space-y-4 text-slate-300 text-sm font-medium">
+              <li class="flex gap-4"><i data-lucide="check" class="text-brand-teal w-5 h-5 shrink-0"></i> Direct Messaging with Teachers</li>
+              <li class="flex gap-4"><i data-lucide="check" class="text-brand-teal w-5 h-5 shrink-0"></i> View grade-locked visual yearbooks</li>
+              <li class="flex gap-4"><i data-lucide="check" class="text-brand-teal w-5 h-5 shrink-0"></i> Real-time health & absence alerts</li>
+            </ul>
+          </div>
+          <div class="bg-slate-50 p-8 md:p-10 rounded-[2.5rem] md:rounded-[3.5rem] border-2 border-slate-100 space-y-6 md:space-y-8 text-brand-navy">
+            <h3 class="text-2xl md:text-3xl font-bold uppercase tracking-tight text-slate-900">For Students</h3>
+            <ul class="space-y-4 text-slate-500 text-sm font-medium">
+              <li class="flex gap-4"><i data-lucide="star" class="text-brand-navy w-5 h-5 shrink-0"></i> Access Tutoring Hub (Videos/Notes)</li>
+              <li class="flex gap-4"><i data-lucide="star" class="text-brand-navy w-5 h-5 shrink-0"></i> Grade-specific community chats</li>
+              <li class="flex gap-4"><i data-lucide="star" class="text-brand-navy w-5 h-5 shrink-0"></i> Homework tracking and signatures</li>
+            </ul>
+          </div>
+          <div class="bg-white p-8 md:p-10 rounded-[2.5rem] md:rounded-[3.5rem] border-2 border-slate-100 space-y-6 md:space-y-8 text-brand-navy shadow-sm">
+            <h3 class="text-2xl md:text-3xl font-bold uppercase tracking-tight text-slate-900">For Schools</h3>
+            <ul class="space-y-4 text-slate-500 text-sm font-medium">
+              <li class="flex gap-4"><i data-lucide="zap" class="text-brand-teal w-5 h-5 shrink-0"></i> Automated Yearbook Generation</li>
+              <li class="flex gap-4"><i data-lucide="zap" class="text-brand-teal w-5 h-5 shrink-0"></i> Secure Institutional bulletin posts</li>
+              <li class="flex gap-4"><i data-lucide="zap" class="text-brand-teal w-5 h-5 shrink-0"></i> Managed campus directories</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- REFUND SECTION -->
+      <section id="tab-refund" class="tab-content animate-fade-in max-w-5xl mx-auto py-12 md:py-32 px-6 space-y-8 md:space-y-12 text-center">
+        <h2 class="text-4xl md:text-6xl font-semibold text-brand-navy uppercase tracking-tighter">Refund <span class="text-brand-teal">Terms.</span></h2>
+        <div class="bg-slate-50 p-8 md:p-12 rounded-[2rem] md:rounded-[4rem] border-2 border-slate-100 shadow-sm text-left max-w-2xl mx-auto">
+          <ul class="space-y-10 md:space-y-12 text-slate-600 font-medium text-sm md:text-base">
+            <li class="flex flex-col md:flex-row gap-4 md:gap-6 items-center md:items-start text-center md:text-left">
+              <i data-lucide="clock" class="w-10 h-10 md:w-12 md:h-12 text-brand-teal shrink-0"></i> 
+              <div>
+                <strong class="block text-lg md:text-xl text-slate-900 mb-2">5-Day Minimum Use</strong> 
+                Refund requests can only be evaluated after 5 days of account use to ensure a complete evaluation of the service.
+              </div>
+            </li>
+            <li class="flex flex-col md:flex-row gap-4 md:gap-6 items-center md:items-start text-center md:text-left">
+              <i data-lucide="mail" class="w-10 h-10 md:w-12 md:h-12 text-brand-teal shrink-0"></i> 
+              <div>
+                <strong class="block text-lg md:text-xl text-slate-900 mb-2">Official Channel</strong> 
+                All refund requests must be formally submitted to <strong>info@educater.co.za</strong> with proof of purchase.
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- CONTACT SECTION -->
+      <section id="tab-contact" class="tab-content animate-fade-in max-w-7xl mx-auto py-16 md:py-32 px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-20 text-left items-start">
+          <div class="space-y-6 md:space-y-12 text-center lg:text-left">
+            <h2 class="text-4xl md:text-6xl font-semibold text-brand-navy uppercase tracking-tighter leading-none">Let's connect <br>your <span class="text-brand-teal">Campus.</span></h2>
+            <div class="space-y-4">
+              <a href="mailto:info@educater.co.za" class="flex items-center justify-center lg:justify-start gap-4 md:gap-6 p-5 md:p-8 bg-slate-50 rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-100 hover:shadow-lg transition-all group">
+                <div class="w-10 h-10 md:w-16 md:h-16 bg-brand-navy text-brand-teal rounded-xl md:rounded-2xl flex items-center justify-center group-hover:bg-brand-teal group-hover:text-brand-navy transition-colors shrink-0"><i data-lucide="mail" class="w-5 h-5 md:w-7 md:h-7"></i></div>
+                <div><p class="text-[10px] md:text-xl font-bold text-brand-navy uppercase tracking-tight">info@educater.co.za</p></div>
+              </a>
+            </div>
+          </div>
+          <div class="bg-white p-8 md:p-16 rounded-[2.5rem] md:rounded-[4rem] border-2 border-slate-100 shadow-2xl min-h-[400px] md:min-h-[500px] flex items-center">
+            <form id="contact-form" class="w-full space-y-6 md:space-y-8">
+              <div class="space-y-2">
+                <label class="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Full Name</label>
+                <input required type="text" class="w-full px-6 py-4 md:px-8 md:py-5 bg-slate-50 border-2 border-transparent focus:border-brand-teal focus:bg-white rounded-xl md:rounded-2xl outline-none font-medium text-brand-navy uppercase tracking-widest text-sm" placeholder="John Smith">
+              </div>
+              <div class="space-y-2">
+                <label class="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Email Address</label>
+                <input required type="email" class="w-full px-6 py-4 md:px-8 md:py-5 bg-slate-50 border-2 border-transparent focus:border-brand-teal focus:bg-white rounded-xl md:rounded-2xl outline-none font-medium text-brand-navy uppercase tracking-widest text-sm" placeholder="john@school.edu">
+              </div>
+              <div class="space-y-2">
+                <label class="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Message</label>
+                <textarea required rows="4" class="w-full px-6 py-4 md:px-8 md:py-5 bg-slate-50 border-2 border-transparent focus:border-brand-teal focus:bg-white rounded-xl md:rounded-2xl outline-none font-medium text-brand-navy transition-all resize-none text-sm" placeholder="Tell us about your school needs..."></textarea>
+              </div>
+              <button type="submit" class="w-full py-5 md:py-6 bg-brand-navy text-white rounded-xl md:rounded-2xl font-bold uppercase tracking-[0.2em] text-[10px] md:text-[11px] shadow-2xl active:scale-95 transition-all">Send Inquiry</button>
+            </form>
+            <div id="success-msg" class="hidden w-full space-y-8 text-center animate-fade-in">
+              <div class="w-20 h-20 md:w-24 md:h-24 bg-brand-teal/10 rounded-[1.5rem] md:rounded-[2.5rem] flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="check-circle-2" class="w-10 h-10 md:w-12 md:h-12 text-brand-teal animate-float"></i>
+              </div>
+              <h3 class="text-2xl md:text-4xl font-bold text-brand-navy uppercase tracking-tighter text-slate-900">Inquiry Sent!</h3>
+              <p class="text-slate-500 font-medium max-w-xs mx-auto text-xs md:text-sm">Our consultants will contact you shortly.</p>
+              <button id="reset-contact" class="px-8 py-3 md:px-10 md:py-4 bg-brand-navy text-white rounded-xl font-bold uppercase tracking-widest text-[9px]">Send Another</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT SECTION -->
+      <section id="tab-about" class="tab-content animate-fade-in max-w-7xl mx-auto py-16 md:py-32 px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-20 items-center">
+          <div class="space-y-6 md:space-y-10 text-center lg:text-left">
+            <h2 class="text-4xl md:text-7xl font-semibold text-brand-navy leading-none tracking-tighter uppercase">Our Vision <br><span class="text-brand-teal">Redefined.</span></h2>
+            <p class="text-base md:text-2xl text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              Educater provides a single source of truth. We boast an <strong>automated yearbook system</strong> that harvests daily memories alongside safe, official messaging channels.
+            </p>
+          </div>
+          <div class="grid grid-cols-2 gap-4 md:gap-6">
+            <div class="space-y-4 md:space-y-6 pt-6 md:pt-12">
+              <div class="aspect-square rounded-[1.5rem] md:rounded-[3rem] bg-brand-teal flex items-center justify-center shadow-xl"><i data-lucide="zap" class="w-10 h-10 md:w-16 md:h-16 text-brand-navy"></i></div>
+              <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop" class="aspect-[3/4] rounded-[1.5rem] md:rounded-[3rem] object-cover shadow-xl" alt="">
+            </div>
+            <div class="space-y-4 md:space-y-6">
+              <img src="https://images.unsplash.com/photo-1544717297-fa95b3ee51f8?q=80&w=2070&auto=format&fit=crop" class="aspect-[3/4] rounded-[1.5rem] md:rounded-[3rem] object-cover shadow-xl" alt="">
+              <div class="aspect-square rounded-[1.5rem] md:rounded-[3rem] bg-brand-navy flex items-center justify-center shadow-xl"><i data-lucide="shield" class="w-10 h-10 md:w-16 md:h-16 text-brand-teal"></i></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-navy text-white py-12 md:py-24 px-6 border-t border-white/5">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-16 text-left">
+        <div class="space-y-6 md:space-y-8">
+          <img src="https://firebasestorage.googleapis.com/v0/b/websitey-9f8e4.firebasestorage.app/o/Educator.svg?alt=media&token=423e9fc5-b827-4ff6-8778-51a7343890e2" class="h-4 md:h-6 brightness-0 invert" alt="">
+          <p class="text-slate-400 text-xs md:text-sm font-medium leading-relaxed max-w-xs">The premium digital bridge for the modern school campus.</p>
+        </div>
+        <div>
+          <h4 class="text-brand-teal mb-6 md:mb-8 uppercase tracking-[0.3em] text-[8px] md:text-[10px] font-black">Platform</h4>
+          <ul class="space-y-3 md:space-y-4 text-[10px] md:text-sm font-medium text-slate-300">
+            <li><button class="tab-trigger hover:text-white uppercase tracking-widest" data-tab="pricing">Pricing</button></li>
+            <li><button class="tab-trigger hover:text-white uppercase tracking-widest" data-tab="privacy">Privacy</button></li>
+            <li><button class="tab-trigger hover:text-white uppercase tracking-widest" data-tab="refund">Refund Policy</button></li>
+          </ul>
+        </div>
+        <div>
+           <h4 class="text-brand-teal mb-6 md:mb-8 uppercase tracking-[0.3em] text-[8px] md:text-[10px] font-black">Security</h4>
+           <div class="flex items-center gap-3 text-slate-400 text-[8px] md:text-[10px] font-bold uppercase tracking-widest">
+             <i data-lucide="lock" class="w-3 md:w-4 h-3 md:h-4 text-brand-teal"></i> Firebase Encrypted
+           </div>
+        </div>
+        <div>
+          <h4 class="text-brand-teal mb-6 md:mb-8 uppercase tracking-[0.3em] text-[8px] md:text-[10px] font-black">Connect</h4>
+          <a href="mailto:info@educater.co.za" class="w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-white/5 flex items-center justify-center hover:bg-brand-teal group transition-all">
+            <i data-lucide="mail" class="w-5 md:w-6 h-5 md:h-6 text-brand-teal group-hover:text-brand-navy"></i>
+          </a>
+        </div>
+      </div>
+      <div class="max-w-7xl mx-auto mt-12 md:mt-24 pt-6 md:pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between text-center md:text-left gap-4">
+        <p class="text-[8px] md:text-[9px] font-medium uppercase tracking-[0.3em] text-slate-500">© 2026 Educater. All Rights Reserved.</p>
+        <p class="text-[8px] md:text-[9px] font-medium uppercase tracking-[0.3em] text-slate-600 italic">Institutional Excellence Secured</p>
+      </div>
+    </footer>
+
+    <!-- Install Modal -->
+    <div id="download-modal" class="fixed inset-0 z-[200] bg-slate-900/90 backdrop-blur-xl flex items-start justify-center p-4 sm:p-10 overflow-y-auto">
+      <div class="bg-white w-full max-w-2xl rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl my-auto text-center animate-fade-in">
+        <div class="bg-brand-navy p-10 md:p-16 relative">
+          <button id="modal-close" class="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors"><i data-lucide="x" class="w-6 h-6 md:w-8 md:h-8"></i></button>
+          <img src="https://firebasestorage.googleapis.com/v0/b/websitey-9f8e4.firebasestorage.app/o/Educator.svg?alt=media&token=423e9fc5-b827-4ff6-8778-51a7343890e2" class="h-5 md:h-6 brightness-0 invert mx-auto mb-8" alt="educater.">
+          <div class="w-16 h-16 md:w-20 md:h-20 bg-white/10 rounded-[1.25rem] md:rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 md:mb-8"><i data-lucide="download" class="w-8 h-8 md:w-10 md:h-10 text-brand-teal"></i></div>
+          <h2 class="text-2xl md:text-4xl font-bold text-white mb-3 md:mb-4 uppercase tracking-tighter">Install Educater.</h2>
+          <p class="text-slate-400 text-xs md:text-sm font-medium max-w-sm mx-auto">Educater is a Progressive Web App. Follow the instructions below to install on your device.</p>
+        </div>
+        
+        <div class="p-6 md:p-10 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 bg-slate-50">
+            <!-- iOS -->
+            <div class="bg-white p-6 rounded-[1.5rem] md:rounded-[2rem] border border-slate-200 shadow-sm text-left">
+              <div class="flex items-center gap-2 mb-3 md:mb-4">
+                <i data-lucide="smartphone" class="w-4 h-4 text-brand-teal"></i>
+                <h3 class="font-bold text-slate-900 uppercase text-[8px] md:text-[9px] tracking-widest">iOS (iPhone)</h3>
+              </div>
+              <ol class="space-y-2 md:space-y-3 text-[9px] md:text-[10px] font-medium text-slate-500">
+                <li>1. Open Safari browser</li>
+                <li>2. Tap the 'Share' icon</li>
+                <li>3. Select 'Add to Home Screen'</li>
+              </ol>
+            </div>
+            <!-- Android -->
+            <div class="bg-white p-6 rounded-[1.5rem] md:rounded-[2rem] border border-slate-200 shadow-sm text-left">
+              <div class="flex items-center gap-2 mb-3 md:mb-4">
+                <i data-lucide="monitor" class="w-4 h-4 text-brand-teal"></i>
+                <h3 class="font-bold text-slate-900 uppercase text-[8px] md:text-[9px] tracking-widest">Android</h3>
+              </div>
+              <ol class="space-y-2 md:space-y-3 text-[9px] md:text-[10px] font-medium text-slate-500">
+                <li>1. Open Chrome browser</li>
+                <li>2. Tap menu (3 dots)</li>
+                <li>3. Tap 'Install App'</li>
+              </ol>
+            </div>
+            <!-- Windows -->
+            <div class="bg-white p-6 rounded-[1.5rem] md:rounded-[2rem] border border-slate-200 shadow-sm text-left">
+              <div class="flex items-center gap-2 mb-3 md:mb-4">
+                <i data-lucide="globe" class="w-4 h-4 text-brand-teal"></i>
+                <h3 class="font-bold text-slate-900 uppercase text-[8px] md:text-[9px] tracking-widest">Windows</h3>
+              </div>
+              <ol class="space-y-2 md:space-y-3 text-[9px] md:text-[10px] font-medium text-slate-500">
+                <li>1. Open in Edge/Chrome</li>
+                <li>2. Click the 'Install' icon</li>
+                <li>3. Pin to taskbar</li>
+              </ol>
+            </div>
+        </div>
+
+        <div class="p-8 md:p-12 border-t border-slate-100">
+           <button id="modal-confirm" class="w-full py-5 md:py-6 bg-brand-teal text-brand-navy rounded-[1.25rem] md:rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] md:text-[11px] shadow-xl hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2">
+             Got it! Take me there <i data-lucide="arrow-right" class="w-5 h-5"></i>
+           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Badge -->
+    <div class="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[60] bg-brand-navy/95 backdrop-blur-md text-white px-4 py-3 md:px-6 md:py-4 rounded-[1.5rem] md:rounded-[2.5rem] border border-white/10 shadow-2xl flex items-center gap-3 md:gap-4 pointer-events-none sm:pointer-events-auto">
+      <div class="w-8 h-8 md:w-10 md:h-10 bg-brand-teal rounded-full flex items-center justify-center"><i data-lucide="shield" class="w-4 h-4 md:w-5 md:h-5 text-brand-navy"></i></div>
+      <div class="flex flex-col text-left">
+        <span class="text-[7px] md:text-[9px] font-black uppercase tracking-widest text-brand-teal leading-none mb-1">Institutional Security</span>
+        <span class="text-[9px] md:text-[11px] font-bold text-white/80 leading-none">Powered by Google Firebase</span>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
