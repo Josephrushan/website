@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Logo from './components/Logo';
 import PrivacyPolicyModule from './components/PrivacyPolicyModule';
@@ -239,6 +238,7 @@ const App: React.FC = () => {
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
 
   useEffect(() => {
+    console.log('Active Tab:', activeTab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeTab]);
 
@@ -353,7 +353,12 @@ const App: React.FC = () => {
              </form>
           </div>
         </div>}
-        {activeTab === 'privacy' && <PrivacyPolicyModule />}
+        {activeTab === 'privacy' && (
+          <>
+            {console.log('Rendering PrivacyPolicyModule')}
+            <PrivacyPolicyModule />
+          </>
+        )}
         {activeTab === 'refund-policy' && <div className="max-w-5xl mx-auto py-32 px-6 space-y-12">
             <h2 className="text-4xl md:text-6xl font-semibold text-brand-navy uppercase tracking-tighter text-center">Refund <span className="text-brand-teal">Policy.</span></h2>
             <div className="bg-slate-50 p-12 rounded-[4rem] border border-slate-200 text-center md:text-left space-y-8">
