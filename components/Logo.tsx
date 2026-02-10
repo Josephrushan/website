@@ -7,7 +7,7 @@ interface LogoProps {
 }
 
 const Logo: React.FC<LogoProps> = ({ className = "", white = false, size = 'md' }) => {
-  const wordmarkUrl = "https://firebasestorage.googleapis.com/v0/b/websitey-9f8e4.firebasestorage.app/o/Educator.svg?alt=media&token=423e9fc5-b827-4ff6-8778-51a7343890e2";
+  const wordmarkUrl = "https://firebasestorage.googleapis.com/v0/b/websitey-9f8e4.firebasestorage.app/o/Educator.svg?alt=media&token=474dc685-fd5c-4475-b93a-b8d55c367d75";
   
   // Adjusted for "smaller on mobile" but using full logo
   const heightClasses = {
